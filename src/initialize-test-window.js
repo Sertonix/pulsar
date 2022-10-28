@@ -121,7 +121,7 @@ module.exports = async function({ blobStore }) {
     const testRunner = requireModule(testRunnerPath);
     const legacyTestRunner = require(legacyTestRunnerPath);
     const buildDefaultApplicationDelegate = () => new ApplicationDelegate();
-    const buildAtomEnvironment = function(params) {
+    const buildEditorEnvironment = function(params) {
       params = cloneObject(params);
       if (!params.hasOwnProperty('clipboard')) {
         params.clipboard = clipboard;
@@ -132,17 +132,17 @@ module.exports = async function({ blobStore }) {
       if (!params.hasOwnProperty('onlyLoadBaseStyleSheets')) {
         params.onlyLoadBaseStyleSheets = true;
       }
-      const atomEnvironment = new AtomEnvironment(params);
-      atomEnvironment.initialize(params);
-      TextEditor.setScheduler(atomEnvironment.views);
-      return atomEnvironment;
+      const editorEnvironment = new AtomEnvironment(params);
+      editorEnvironment.initialize(params);
+      TextEditor.setScheduler(editorEnvironment.views);
+      return editorEnvironment;
     };
 
     const statusCode = await testRunner({
       logFile,
       headless,
       testPaths,
-      buildAtomEnvironment,
+      buildAtomEnvironment: buildEditorEnvironment,
       buildDefaultApplicationDelegate,
       legacyTestRunner
     });

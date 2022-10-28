@@ -52,9 +52,9 @@ const getDefaultPath = () => {
 
 const getSocketSecretPath = applicationVersion => {
   const { username } = os.userInfo();
-  const atomHome = path.resolve(process.env.ATOM_HOME);
+  const editorHome = path.resolve(process.env.ATOM_HOME);
 
-  return path.join(atomHome, `.pulsar-socket-secret-${username}-${applicationVersion}`);
+  return path.join(editorHome, `.pulsar-socket-secret-${username}-${applicationVersion}`);
 };
 
 const getSocketPath = socketSecret => {
@@ -477,9 +477,9 @@ module.exports = class AtomApplication extends EventEmitter {
     return this.windowStack.getLastFocusedWindow(predicate);
   }
 
-  // Creates server to listen for additional atom application launches.
+  // Creates server to listen for additional application launches.
   //
-  // You can run the atom command multiple times, but after the first launch
+  // You can run the command multiple times, but after the first launch
   // the other launches will just pass their information to this server and then
   // close immediately.
   async listenForArgumentsFromNewProcess() {
@@ -578,9 +578,9 @@ module.exports = class AtomApplication extends EventEmitter {
     this.on('application:open-safe', () =>
       this.promptForPathToOpen('all', { safeMode: true })
     );
-    this.on('application:inspect', ({ x, y, atomWindow }) => {
-      if (!atomWindow) atomWindow = this.focusedWindow();
-      if (atomWindow) atomWindow.browserWindow.inspectElement(x, y);
+    this.on('application:inspect', ({ x, y, atomWindow: editorWindow }) => {
+      if (!editorWindow) editorWindow = this.focusedWindow();
+      if (editorWindow) editorWindow.browserWindow.inspectElement(x, y);
     });
 
     this.on('application:open-documentation', () =>
@@ -814,8 +814,8 @@ module.exports = class AtomApplication extends EventEmitter {
 
     this.disposable.add(
       ipcHelpers.on(ipcMain, 'did-change-history-manager', event => {
-        for (let atomWindow of this.getAllWindows()) {
-          const { webContents } = atomWindow.browserWindow;
+        for (let editorWindow of this.getAllWindows()) {
+          const { webContents } = editorWindow.browserWindow;
           if (webContents !== event.sender)
             webContents.send('did-change-history-manager');
         }
@@ -1102,12 +1102,12 @@ module.exports = class AtomApplication extends EventEmitter {
   // Public: Executes the given command on the given window.
   //
   // command - The string representing the command.
-  // atomWindow - The {AtomWindow} to send the command to.
+  // editorWindow - The {AtomWindow} to send the command to.
   // args - The optional arguments to pass along.
-  sendCommandToWindow(command, atomWindow, ...args) {
+  sendCommandToWindow(command, editorWindow, ...args) {
     if (!this.emit(command, ...args)) {
-      if (atomWindow) {
-        return atomWindow.sendCommand(command, ...args);
+      if (editorWindow) {
+        return editorWindow.sendCommand(command, ...args);
       } else {
         return this.sendCommandToFirstResponder(command);
       }
@@ -1182,7 +1182,7 @@ module.exports = class AtomApplication extends EventEmitter {
 
   atomWindowForBrowserWindow(browserWindow) {
     return this.getAllWindows().find(
-      atomWindow => atomWindow.browserWindow === browserWindow
+      editorWindow => editorWindow.browserWindow === browserWindow
     );
   }
 

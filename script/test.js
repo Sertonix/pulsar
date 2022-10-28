@@ -86,8 +86,8 @@ if (process.platform === 'darwin') {
 }
 
 function prepareEnv(suiteName) {
-  const atomHomeDirPath = temp.mkdirSync(suiteName);
-  const env = Object.assign({}, process.env, { ATOM_HOME: atomHomeDirPath });
+  const editorHomeDirPath = temp.mkdirSync(suiteName);
+  const env = Object.assign({}, process.env, { ATOM_HOME: editorHomeDirPath });
 
   if (process.env.TEST_JUNIT_XML_ROOT) {
     // Tell Jasmine to output this suite's results as a JUnit XML file to a subdirectory of the root, so that a

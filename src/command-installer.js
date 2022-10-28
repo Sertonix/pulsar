@@ -29,14 +29,14 @@ module.exports = class CommandInstaller {
       );
     };
 
-    this.installAtomCommand(true, (error, atomCommandName) => {
+    this.installAtomCommand(true, (error, editorCommandName) => {
       if (error) return showErrorDialog(error);
       this.installApmCommand(true, (error, apmCommandName) => {
         if (error) return showErrorDialog(error);
         this.applicationDelegate.confirm(
           {
             message: 'Commands installed.',
-            detail: `The shell commands \`${atomCommandName}\` and \`${apmCommandName}\` are installed.`
+            detail: `The shell commands \`${editorCommandName}\` and \`${apmCommandName}\` are installed.`
           },
           () => {}
         );

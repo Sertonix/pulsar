@@ -8,7 +8,7 @@ const GitRepository = require('../src/git-repository');
 const Notification = require('../src/notification');
 const { watchPath } = require('../src/path-watcher');
 
-const atomExport = {
+const editorExport = {
   BufferedNodeProcess,
   BufferedProcess,
   GitRepository,
@@ -26,7 +26,7 @@ const atomExport = {
 
 // Shell integration is required by both Squirrel and Settings-View
 if (process.platform === 'win32') {
-  Object.defineProperty(atomExport, 'WinShell', {
+  Object.defineProperty(editorExport, 'WinShell', {
     enumerable: true,
     get() {
       return require('../src/main-process/win-shell');
@@ -37,8 +37,8 @@ if (process.platform === 'win32') {
 // The following classes can't be used from a Task handler and should therefore
 // only be exported when not running as a child node process
 if (process.type === 'renderer') {
-  atomExport.Task = require('../src/task');
-  atomExport.TextEditor = require('../src/text-editor');
+  editorExport.Task = require('../src/task');
+  editorExport.TextEditor = require('../src/text-editor');
 }
 
-module.exports = atomExport;
+module.exports = editorExport;

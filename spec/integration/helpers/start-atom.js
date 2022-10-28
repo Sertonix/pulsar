@@ -6,8 +6,8 @@ const { once } = require('underscore-plus');
 const { spawn } = require('child_process');
 const webdriverio = require('webdriverio');
 
-const AtomPath = remote.process.argv[0];
-const AtomLauncherPath = path.join(
+const EditorPath = remote.process.argv[0];
+const EditorLauncherPath = path.join(
   __dirname,
   '..',
   'helpers',
@@ -52,7 +52,7 @@ const chromeDriverDown = done => {
   setTimeout(checkStatus, 100);
 };
 
-const buildAtomClient = async (args, env) => {
+const buildEditorClient = async (args, env) => {
   const userDataDir = temp.mkdirSync('atom-user-data-dir');
   const client = await webdriverio.remote({
     host: 'localhost',
@@ -60,9 +60,9 @@ const buildAtomClient = async (args, env) => {
     capabilities: {
       browserName: 'chrome', // Webdriverio will figure it out on it's own, but I will leave it in case it's helpful in the future https://webdriver.io/docs/configurationfile.html
       'goog:chromeOptions': {
-        binary: AtomLauncherPath,
+        binary: EditorLauncherPath,
         args: [
-          `atom-path=${AtomPath}`,
+          `atom-path=${EditorPath}`,
           `atom-args=${args.join(' ')}`,
           `atom-env=${Object.entries(env)
             .map(([key, value]) => `${key}=${value}`)
@@ -146,7 +146,7 @@ Logs:\n${chromedriverLogs.join('\n')}`);
 
       let client;
       try {
-        client = await buildAtomClient(args, env);
+        client = await buildEditorClient(args, env);
       } catch (error) {
         jasmine
           .getEnv()

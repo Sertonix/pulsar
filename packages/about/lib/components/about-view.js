@@ -1,7 +1,7 @@
 const { Disposable } = require('atom');
 const etch = require('etch');
 const { shell } = require('electron');
-const AtomLogo = require('./atom-logo');
+const EditorLogo = require('./atom-logo');
 const EtchComponent = require('../etch-component');
 const UpdateView = require('./update-view');
 
@@ -80,7 +80,7 @@ module.exports = class AboutView extends EtchComponent {
           { className: 'about-header' },
           $.a(
             { className: 'about-atom-io', href: 'https://atom.io' },
-            $(AtomLogo)
+            $(EditorLogo)
           ),
           $.div(
             { className: 'about-header-info' },

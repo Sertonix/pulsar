@@ -40,13 +40,13 @@ module.exports = function({logFile, headless, testPaths, buildAtomEnvironment}) 
   );
 
   const userHome = process.env.ATOM_HOME || path.join(fs.getHomeDirectory(), '.atom');
-  const atomHome = temp.mkdirSync({prefix: 'atom-test-home-'});
+  const editorHome = temp.mkdirSync({prefix: 'atom-test-home-'});
   if (process.env.APM_TEST_PACKAGES) {
     const testPackages = process.env.APM_TEST_PACKAGES.split(/\s+/);
-    fs.makeTreeSync(path.join(atomHome, 'packages'));
+    fs.makeTreeSync(path.join(editorHome, 'packages'));
     for (let packName of Array.from(testPackages)) {
       const userPack = path.join(userHome, 'packages', packName);
-      const loadablePack = path.join(atomHome, 'packages', packName);
+      const loadablePack = path.join(editorHome, 'packages', packName);
 
       try {
         fs.symlinkSync(userPack, loadablePack, 'dir');
@@ -62,7 +62,7 @@ module.exports = function({logFile, headless, testPaths, buildAtomEnvironment}) 
   applicationDelegate.setWindowDocumentEdited = function() {};
   window.atom = buildAtomEnvironment({
     applicationDelegate, window, document,
-    configDirPath: atomHome,
+    configDirPath: editorHome,
     enablePersistence: false
   });
 

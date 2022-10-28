@@ -20,7 +20,7 @@ const args = yargs(process.argv)
   .alias('t', 'test')
   .alias('r', 'resource-path').argv;
 
-function isAtomRepoPath(repoPath) {
+function isEditorRepoPath(repoPath) {
   let packageJsonPath = path.join(repoPath, 'package.json');
   if (fs.statSyncNoException(packageJsonPath)) {
     try {
@@ -50,7 +50,7 @@ if (args.resourcePath) {
 
   if (process.env.ATOM_DEV_RESOURCE_PATH) {
     devResourcePath = process.env.ATOM_DEV_RESOURCE_PATH;
-  } else if (isAtomRepoPath(process.cwd())) {
+} else if (isEditorRepoPath(process.cwd())) {
     devResourcePath = process.cwd();
   } else if (fs.statSyncNoException(defaultRepositoryPath)) {
     devResourcePath = defaultRepositoryPath;

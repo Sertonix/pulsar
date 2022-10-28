@@ -100,7 +100,7 @@ module.exports = class TextEditor {
     return item.element || item;
   }
 
-  static deserialize(state, atomEnvironment) {
+  static deserialize(state, editorEnvironment) {
     if (state.version !== SERIALIZATION_VERSION) return null;
 
     let bufferId = state.tokenizedBuffer
@@ -108,7 +108,7 @@ module.exports = class TextEditor {
       : state.bufferId;
 
     try {
-      state.buffer = atomEnvironment.project.bufferForIdSync(bufferId);
+      state.buffer = editorEnvironment.project.bufferForIdSync(bufferId);
       if (!state.buffer) return null;
     } catch (error) {
       if (error.syscall === 'read') {
@@ -118,7 +118,7 @@ module.exports = class TextEditor {
       }
     }
 
-    state.assert = atomEnvironment.assert.bind(atomEnvironment);
+    state.assert = editorEnvironment.assert.bind(editorEnvironment);
 
     // Semantics of the readOnly flag have changed since its introduction.
     // Only respect readOnly2, which has been set with the current readOnly semantics.
@@ -128,7 +128,7 @@ module.exports = class TextEditor {
 
     const editor = new TextEditor(state);
     if (state.registered) {
-      const disposable = atomEnvironment.textEditors.add(editor);
+      const disposable = editorEnvironment.textEditors.add(editor);
       editor.onDidDestroy(() => disposable.dispose());
     }
     return editor;

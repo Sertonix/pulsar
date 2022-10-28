@@ -16,12 +16,12 @@ module.exports = function() {
   console.log(`Cleaning ${apmDependenciesPath}`);
   rmPromises.push(fs.remove(apmDependenciesPath));
 
-  const atomDependenciesPath = path.join(
+  const editorDependenciesPath = path.join(
     CONFIG.repositoryRootPath,
     'node_modules'
   );
-  console.log(`Cleaning ${atomDependenciesPath}`);
-  rmPromises.push(fs.remove(atomDependenciesPath));
+  console.log(`Cleaning ${editorDependenciesPath}`);
+  rmPromises.push(fs.remove(editorDependenciesPath));
 
   const scriptDependenciesPath = path.join(
     CONFIG.scriptRootPath,

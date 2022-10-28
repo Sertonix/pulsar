@@ -1,8 +1,8 @@
 const { Menu } = require('electron');
 
 module.exports = class ContextMenu {
-  constructor(template, atomWindow) {
-    this.atomWindow = atomWindow;
+  constructor(template, editorWindow) {
+    this.atomWindow = editorWindow;
     this.createClickHandlers(template);
     const menu = Menu.buildFromTemplate(template);
     menu.popup(this.atomWindow.browserWindow, { async: true });

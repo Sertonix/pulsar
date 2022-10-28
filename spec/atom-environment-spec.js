@@ -226,11 +226,11 @@ describe('AtomEnvironment', () => {
     });
 
     it('saves state when the CPU is idle after a keydown or mousedown event', () => {
-      const atomEnv = new AtomEnvironment({
+      const editorEnv = new AtomEnvironment({
         applicationDelegate: global.atom.applicationDelegate
       });
       const idleCallbacks = [];
-      atomEnv.initialize({
+      editorEnv.initialize({
         window: {
           requestIdleCallback(callback) {
             idleCallbacks.push(callback);
@@ -241,32 +241,32 @@ describe('AtomEnvironment', () => {
         document: document.implementation.createHTMLDocument()
       });
 
-      spyOn(atomEnv, 'saveState');
+      spyOn(editorEnv, 'saveState');
 
       const keydown = new KeyboardEvent('keydown');
-      atomEnv.document.dispatchEvent(keydown);
-      advanceClock(atomEnv.saveStateDebounceInterval);
+      editorEnv.document.dispatchEvent(keydown);
+      advanceClock(editorEnv.saveStateDebounceInterval);
       idleCallbacks.shift()();
-      expect(atomEnv.saveState).toHaveBeenCalledWith({ isUnloading: false });
-      expect(atomEnv.saveState).not.toHaveBeenCalledWith({ isUnloading: true });
+      expect(editorEnv.saveState).toHaveBeenCalledWith({ isUnloading: false });
+      expect(editorEnv.saveState).not.toHaveBeenCalledWith({ isUnloading: true });
 
-      atomEnv.saveState.reset();
+      editorEnv.saveState.reset();
       const mousedown = new MouseEvent('mousedown');
-      atomEnv.document.dispatchEvent(mousedown);
-      advanceClock(atomEnv.saveStateDebounceInterval);
+      editorEnv.document.dispatchEvent(mousedown);
+      advanceClock(editorEnv.saveStateDebounceInterval);
       idleCallbacks.shift()();
-      expect(atomEnv.saveState).toHaveBeenCalledWith({ isUnloading: false });
-      expect(atomEnv.saveState).not.toHaveBeenCalledWith({ isUnloading: true });
+      expect(editorEnv.saveState).toHaveBeenCalledWith({ isUnloading: false });
+      expect(editorEnv.saveState).not.toHaveBeenCalledWith({ isUnloading: true });
 
-      atomEnv.destroy();
+      editorEnv.destroy();
     });
 
     it('ignores mousedown/keydown events happening after calling prepareToUnloadEditorWindow', async () => {
-      const atomEnv = new AtomEnvironment({
+      const editorEnv = new AtomEnvironment({
         applicationDelegate: global.atom.applicationDelegate
       });
       const idleCallbacks = [];
-      atomEnv.initialize({
+      editorEnv.initialize({
         window: {
           requestIdleCallback(callback) {
             idleCallbacks.push(callback);
@@ -277,25 +277,25 @@ describe('AtomEnvironment', () => {
         document: document.implementation.createHTMLDocument()
       });
 
-      spyOn(atomEnv, 'saveState');
+      spyOn(editorEnv, 'saveState');
 
       let mousedown = new MouseEvent('mousedown');
-      atomEnv.document.dispatchEvent(mousedown);
-      expect(atomEnv.saveState).not.toHaveBeenCalled();
-      await atomEnv.prepareToUnloadEditorWindow();
-      expect(atomEnv.saveState).toHaveBeenCalledWith({ isUnloading: true });
+      editorEnv.document.dispatchEvent(mousedown);
+      expect(editorEnv.saveState).not.toHaveBeenCalled();
+      await editorEnv.prepareToUnloadEditorWindow();
+      expect(editorEnv.saveState).toHaveBeenCalledWith({ isUnloading: true });
 
-      advanceClock(atomEnv.saveStateDebounceInterval);
+      advanceClock(editorEnv.saveStateDebounceInterval);
       idleCallbacks.shift()();
-      expect(atomEnv.saveState.calls.length).toBe(1);
+      expect(editorEnv.saveState.calls.length).toBe(1);
 
       mousedown = new MouseEvent('mousedown');
-      atomEnv.document.dispatchEvent(mousedown);
-      advanceClock(atomEnv.saveStateDebounceInterval);
+      editorEnv.document.dispatchEvent(mousedown);
+      advanceClock(editorEnv.saveStateDebounceInterval);
       idleCallbacks.shift()();
-      expect(atomEnv.saveState.calls.length).toBe(1);
+      expect(editorEnv.saveState.calls.length).toBe(1);
 
-      atomEnv.destroy();
+      editorEnv.destroy();
     });
 
     it('serializes the project state with all the options supplied in saveState', async () => {
@@ -610,22 +610,22 @@ describe('AtomEnvironment', () => {
     it('saves the BlobStore so it can be loaded after reload', () => {
       const configDirPath = temp.mkdirSync('atom-spec-environment');
       const fakeBlobStore = jasmine.createSpyObj('blob store', ['save']);
-      const atomEnvironment = new AtomEnvironment({
+      const editorEnvironment = new AtomEnvironment({
         applicationDelegate: atom.applicationDelegate,
         enablePersistence: true
       });
-      atomEnvironment.initialize({
+      editorEnvironment.initialize({
         configDirPath,
         blobStore: fakeBlobStore,
         window,
         document
       });
 
-      atomEnvironment.unloadEditorWindow();
+      editorEnvironment.unloadEditorWindow();
 
       expect(fakeBlobStore.save).toHaveBeenCalled();
 
-      atomEnvironment.destroy();
+      editorEnvironment.destroy();
     });
   });
 
@@ -637,23 +637,23 @@ describe('AtomEnvironment', () => {
         head: document.createElement('head'),
         body: document.createElement('body')
       };
-      const atomEnvironment = new AtomEnvironment({
+      const editorEnvironment = new AtomEnvironment({
         applicationDelegate: atom.applicationDelegate
       });
-      atomEnvironment.initialize({ window, document: fakeDocument });
-      spyOn(atomEnvironment.packages, 'loadPackages').andReturn(
+      editorEnvironment.initialize({ window, document: fakeDocument });
+      spyOn(editorEnvironment.packages, 'loadPackages').andReturn(
         Promise.resolve()
       );
-      spyOn(atomEnvironment.packages, 'activate').andReturn(Promise.resolve());
-      spyOn(atomEnvironment, 'displayWindow').andReturn(Promise.resolve());
-      await atomEnvironment.startEditorWindow();
-      atomEnvironment.unloadEditorWindow();
-      atomEnvironment.destroy();
+      spyOn(editorEnvironment.packages, 'activate').andReturn(Promise.resolve());
+      spyOn(editorEnvironment, 'displayWindow').andReturn(Promise.resolve());
+      await editorEnvironment.startEditorWindow();
+      editorEnvironment.unloadEditorWindow();
+      editorEnvironment.destroy();
     });
   });
 
   describe('::whenShellEnvironmentLoaded()', () => {
-    let atomEnvironment, envLoaded, spy;
+    let editorEnvironment, envLoaded, spy;
 
     beforeEach(() => {
       let resolvePromise = null;
@@ -664,29 +664,29 @@ describe('AtomEnvironment', () => {
         resolvePromise();
         return promise;
       };
-      atomEnvironment = new AtomEnvironment({
+      editorEnvironment = new AtomEnvironment({
         applicationDelegate: atom.applicationDelegate,
         updateProcessEnv() {
           return promise;
         }
       });
-      atomEnvironment.initialize({ window, document });
+      editorEnvironment.initialize({ window, document });
       spy = jasmine.createSpy();
     });
 
-    afterEach(() => atomEnvironment.destroy());
+    afterEach(() => editorEnvironment.destroy());
 
     it('is triggered once the shell environment is loaded', async () => {
-      atomEnvironment.whenShellEnvironmentLoaded(spy);
-      atomEnvironment.updateProcessEnvAndTriggerHooks();
+      editorEnvironment.whenShellEnvironmentLoaded(spy);
+      editorEnvironment.updateProcessEnvAndTriggerHooks();
       await envLoaded();
       expect(spy).toHaveBeenCalled();
     });
 
     it('triggers the callback immediately if the shell environment is already loaded', async () => {
-      atomEnvironment.updateProcessEnvAndTriggerHooks();
+      editorEnvironment.updateProcessEnvAndTriggerHooks();
       await envLoaded();
-      atomEnvironment.whenShellEnvironmentLoaded(spy);
+      editorEnvironment.whenShellEnvironmentLoaded(spy);
       expect(spy).toHaveBeenCalled();
     });
   });

@@ -67,7 +67,7 @@ module.exports = function() {
         'Contents',
         'Resources'
       );
-      setAtomHelperVersion(packagedAppPath);
+      setEditorHelperVersion(packagedAppPath);
     } else if (process.platform === 'linux') {
       bundledResourcesPath = path.join(packagedAppPath, 'resources');
       chmodNodeFiles(packagedAppPath);
@@ -148,7 +148,7 @@ function copyNonASARResources(packagedAppPath, bundledResourcesPath) {
     );
 
     // Customize pulsar.cmd for the channel-specific pulsar.exe name (e.g. pulsar-beta.exe)
-    generateAtomCmdForChannel(bundledResourcesPath);
+    generateEditorCmdForChannel(bundledResourcesPath);
   }
 
   console.log(`Writing LICENSE.md to ${bundledResourcesPath}`);
@@ -160,7 +160,7 @@ function copyNonASARResources(packagedAppPath, bundledResourcesPath) {
   });
 }
 
-function setAtomHelperVersion(packagedAppPath) {
+function setEditorHelperVersion(packagedAppPath) {
   const frameworksPath = path.join(packagedAppPath, 'Contents', 'Frameworks');
   const helperPListPath = path.join(
     frameworksPath,
@@ -264,15 +264,15 @@ function renamePackagedAppDir(packageOutputDirPath) {
   return packagedAppPath;
 }
 
-function generateAtomCmdForChannel(bundledResourcesPath) {
-  const atomCmdTemplate = fs.readFileSync(
+function generateEditorCmdForChannel(bundledResourcesPath) {
+  const editorCmdTemplate = fs.readFileSync(
     path.join(CONFIG.repositoryRootPath, 'resources', 'win', 'pulsar.cmd')
   );
-  const atomCmdContents = template(atomCmdTemplate)({
+  const editorCmdContents = template(editorCmdTemplate)({
     atomExeName: CONFIG.executableName
   });
   fs.writeFileSync(
     path.join(bundledResourcesPath, 'cli', 'pulsar.cmd'),
-    atomCmdContents
+    editorCmdContents
   );
 }

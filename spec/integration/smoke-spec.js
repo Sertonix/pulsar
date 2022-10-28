@@ -2,7 +2,7 @@ const fs = require('fs-plus');
 const path = require('path');
 const season = require('season');
 const temp = require('temp').track();
-const runAtom = require('./helpers/start-atom');
+const runEditor = require('./helpers/start-atom');
 
 describe('Smoke Test', () => {
   // Fails on win32
@@ -10,11 +10,11 @@ describe('Smoke Test', () => {
     return;
   }
 
-  const atomHome = temp.mkdirSync('atom-home');
+  const editorHome = temp.mkdirSync('atom-home');
 
   beforeEach(() => {
     jasmine.useRealClock();
-    season.writeFileSync(path.join(atomHome, 'config.cson'), {
+    season.writeFileSync(path.join(editorHome, 'config.cson'), {
       '*': {
         welcome: { showOnStartup: false },
         core: {
@@ -34,7 +34,7 @@ describe('Smoke Test', () => {
 
     fs.writeFileSync(filePath, '', { encoding: 'utf8' });
 
-    runAtom([tempDirPath], { ATOM_HOME: atomHome }, async client => {
+    runEditor([tempDirPath], { ATOM_HOME: editorHome }, async client => {
       const roots = await client.treeViewRootDirectories();
       expect(roots).toEqual([tempDirPath]);
 

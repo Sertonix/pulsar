@@ -4,7 +4,7 @@ const path = require('path');
 const temp = require('temp');
 const parseCommandLine = require('./parse-command-line');
 const getReleaseChannel = require('../get-release-channel');
-const atomPaths = require('../atom-paths');
+const editorPaths = require('../atom-paths');
 const fs = require('fs');
 const CSON = require('season');
 const Config = require('../config');
@@ -51,8 +51,8 @@ module.exports = function start(resourcePath, devResourcePath, startTime) {
   args.resourcePath = normalizeDriveLetterName(resourcePath);
   args.devResourcePath = normalizeDriveLetterName(devResourcePath);
 
-  atomPaths.setAtomHome(app.getPath('home'));
-  atomPaths.setUserData(app);
+  editorPaths.setAtomHome(app.getPath('home'));
+  editorPaths.setUserData(app);
 
   const config = getConfig();
   const colorProfile = config.get('core.colorProfile');

@@ -17,7 +17,7 @@ const intermediateAppPath = path.join(buildOutputPath, 'app');
 const symbolsPath = path.join(buildOutputPath, 'symbols');
 const electronDownloadPath = path.join(repositoryRootPath, 'electron');
 const homeDirPath = process.env.HOME || process.env.USERPROFILE;
-const atomHomeDirPath =
+const editorHomeDirPath =
   process.env.ATOM_HOME || path.join(homeDirPath, '.pulsar');
 
 const appMetadata = require(path.join(repositoryRootPath, 'package.json'));
@@ -59,7 +59,7 @@ module.exports = {
   intermediateAppPath,
   symbolsPath,
   electronDownloadPath,
-  atomHomeDirPath,
+  atomHomeDirPath: editorHomeDirPath,
   homeDirPath,
   getApmBinPath,
   getNpmBinPath,

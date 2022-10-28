@@ -114,8 +114,8 @@ module.exports = class AutoUpdateManager extends EventEmitter {
   }
 
   emitWindowEvent(eventName, payload) {
-    for (let atomWindow of this.getWindows()) {
-      atomWindow.sendMessage(eventName, payload);
+    for (let editorWindow of this.getWindows()) {
+      editorWindow.sendMessage(eventName, payload);
     }
   }
 

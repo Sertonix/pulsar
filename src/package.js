@@ -559,11 +559,11 @@ module.exports = class Package {
         const methodName = this.metadata.deserializers[deserializerName];
         this.deserializerManager.add({
           name: deserializerName,
-          deserialize: (state, atomEnvironment) => {
+          deserialize: (state, editorEnvironment) => {
             this.registerViewProviders();
             this.requireMainModule();
             this.initializeIfNeeded();
-            if (atomEnvironment.packages.hasActivatedInitialPackages()) {
+            if (editorEnvironment.packages.hasActivatedInitialPackages()) {
               // Only explicitly activate the package if initial packages
               // have finished activating. This is because deserialization
               // generally occurs at Pulsar startup, which happens before the
@@ -576,7 +576,7 @@ module.exports = class Package {
               this.activateNow();
             }
             this.deserialized = true;
-            return this.mainModule[methodName](state, atomEnvironment);
+            return this.mainModule[methodName](state, editorEnvironment);
           }
         });
       });

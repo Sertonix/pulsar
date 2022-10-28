@@ -2,7 +2,7 @@ const { conditionPromise } = require('./helpers/async-spec-helpers');
 const MockUpdater = require('./mocks/updater');
 
 describe('the status bar', () => {
-  let atomVersion;
+  let editorVersion;
   let workspaceElement;
 
   beforeEach(async () => {
@@ -15,7 +15,7 @@ describe('the status bar', () => {
       return storage[key];
     });
     spyOn(atom, 'getVersion').andCallFake(() => {
-      return atomVersion;
+      return editorVersion;
     });
 
     workspaceElement = atom.views.getView(atom.workspace);
@@ -32,7 +32,7 @@ describe('the status bar', () => {
 
   describe('on a stable version', function() {
     beforeEach(async () => {
-      atomVersion = '1.2.3';
+      editorVersion = '1.2.3';
 
       await atom.packages.activatePackage('about');
     });
@@ -74,7 +74,7 @@ describe('the status bar', () => {
         await atom.packages.deactivatePackage('about');
         expect(workspaceElement).not.toContain('.about-release-notes');
 
-        atomVersion = '42.0.0';
+        editorVersion = '42.0.0';
         await atom.packages.activatePackage('about');
 
         await Promise.resolve(); // Service consumption hooks are deferred until the next tick
@@ -86,7 +86,7 @@ describe('the status bar', () => {
 
         await atom.packages.deactivatePackage('about');
 
-        atomVersion = '43.0.0';
+        editorVersion = '43.0.0';
         await atom.packages.activatePackage('about');
 
         await Promise.resolve(); // Service consumption hooks are deferred until the next tick
@@ -97,7 +97,7 @@ describe('the status bar', () => {
 
   describe('on a beta version', function() {
     beforeEach(async () => {
-      atomVersion = '1.2.3-beta4';
+      editorVersion = '1.2.3-beta4';
 
       await atom.packages.activatePackage('about');
     });
@@ -139,7 +139,7 @@ describe('the status bar', () => {
         await atom.packages.deactivatePackage('about');
         expect(workspaceElement).not.toContain('.about-release-notes');
 
-        atomVersion = '42.0.0';
+        editorVersion = '42.0.0';
         await atom.packages.activatePackage('about');
 
         await Promise.resolve(); // Service consumption hooks are deferred until the next tick
@@ -151,7 +151,7 @@ describe('the status bar', () => {
 
         await atom.packages.deactivatePackage('about');
 
-        atomVersion = '43.0.0';
+        editorVersion = '43.0.0';
         await atom.packages.activatePackage('about');
 
         await Promise.resolve(); // Service consumption hooks are deferred until the next tick
@@ -162,7 +162,7 @@ describe('the status bar', () => {
 
   describe('on a development version', function() {
     beforeEach(async () => {
-      atomVersion = '1.2.3-dev-0123abcd';
+      editorVersion = '1.2.3-dev-0123abcd';
 
       await atom.packages.activatePackage('about');
     });

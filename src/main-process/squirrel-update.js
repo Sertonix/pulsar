@@ -8,9 +8,9 @@ const WinShell = require('./win-shell');
 const WinPowerShell = require('./win-powershell');
 
 const appFolder = path.resolve(process.execPath, '..');
-const rootAtomFolder = path.resolve(appFolder, '..');
-const binFolder = path.join(rootAtomFolder, 'bin');
-const updateDotExe = path.join(rootAtomFolder, 'Update.exe');
+const rootEditorFolder = path.resolve(appFolder, '..');
+const binFolder = path.join(rootEditorFolder, 'bin');
+const updateDotExe = path.join(rootEditorFolder, 'Update.exe');
 const execName = path.basename(app.getPath('exe'));
 
 if (process.env.SystemRoot) {
@@ -34,25 +34,25 @@ const spawnUpdate = (args, callback) =>
 // install directory that point to the newly installed versions inside
 // the versioned app directories.
 const addCommandsToPath = callback => {
-  const atomCmdName = execName.replace('.exe', '.cmd');
-  const apmCmdName = atomCmdName.replace('pulsar', 'apm');
-  const atomShName = execName.replace('.exe', '');
-  const apmShName = atomShName.replace('pulsar', 'apm');
+  const editorCmdName = execName.replace('.exe', '.cmd');
+  const apmCmdName = editorCmdName.replace('pulsar', 'apm');
+  const editorShName = execName.replace('.exe', '');
+  const apmShName = editorShName.replace('pulsar', 'apm');
 
   const installCommands = callback => {
-    const atomCommandPath = path.join(binFolder, atomCmdName);
-    const relativeAtomPath = path.relative(
+    const editorCommandPath = path.join(binFolder, editorCmdName);
+    const relativeEditorPath = path.relative(
       binFolder,
       path.join(appFolder, 'resources', 'cli', 'pulsar.cmd')
     );
-    const atomCommand = `@echo off\r\n"%~dp0\\${relativeAtomPath}" %*`;
+    const editorCommand = `@echo off\r\n"%~dp0\\${relativeEditorPath}" %*`;
 
-    const atomShCommandPath = path.join(binFolder, atomShName);
-    const relativeAtomShPath = path.relative(
+    const editorShCommandPath = path.join(binFolder, editorShName);
+    const relativeEditorShPath = path.relative(
       binFolder,
       path.join(appFolder, 'resources', 'cli', 'pulsar.sh')
     );
-    const atomShCommand = `#!/bin/sh\r\n"$(dirname "$0")/${relativeAtomShPath.replace(
+    const editorShCommand = `#!/bin/sh\r\n"$(dirname "$0")/${relativeEditorShPath.replace(
       /\\/g,
       '/'
     )}" "$@"\r\necho`;
@@ -74,8 +74,8 @@ const addCommandsToPath = callback => {
       '/'
     )}" "$@"`;
 
-    fs.writeFile(atomCommandPath, atomCommand, () =>
-      fs.writeFile(atomShCommandPath, atomShCommand, () =>
+    fs.writeFile(editorCommandPath, editorCommand, () =>
+      fs.writeFile(editorShCommandPath, editorShCommand, () =>
         fs.writeFile(apmCommandPath, apmCommand, () =>
           fs.writeFile(apmShCommandPath, apmShCommand, () => callback())
         )
@@ -172,13 +172,13 @@ exports.existsSync = () => fs.existsSync(updateDotExe);
 // Restart Pulsar using the version pointed to by the pulsar.cmd shim
 exports.restartAtom = () => {
   let args;
-  const atomCmdName = execName.replace('.exe', '.cmd');
+  const editorCmdName = execName.replace('.exe', '.cmd');
 
   if (global.atomApplication && global.atomApplication.lastFocusedWindow) {
     const { projectPath } = global.atomApplication.lastFocusedWindow;
     if (projectPath) args = [projectPath];
   }
-  Spawner.spawn(path.join(binFolder, atomCmdName), args);
+  Spawner.spawn(path.join(binFolder, editorCmdName), args);
   app.quit();
 };
 

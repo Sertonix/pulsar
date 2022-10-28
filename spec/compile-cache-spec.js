@@ -14,11 +14,11 @@ const CSON = require('season');
 const CompileCache = require('../src/compile-cache');
 
 describe('CompileCache', () => {
-  let [atomHome, fixtures] = Array.from([]);
+  let [editorHome, fixtures] = Array.from([]);
 
   beforeEach(() => {
     fixtures = atom.project.getPaths()[0];
-    atomHome = temp.mkdirSync('fake-atom-home');
+    editorHome = temp.mkdirSync('fake-atom-home');
 
     CSON.setCacheDir(null);
     CompileCache.resetCacheStats();
@@ -38,7 +38,7 @@ describe('CompileCache', () => {
 
   describe('addPathToCache(filePath, atomHome)', () => {
     describe('when the given file is plain javascript', () => it('does not compile or cache the file', function() {
-      CompileCache.addPathToCache(path.join(fixtures, 'sample.js'), atomHome);
+      CompileCache.addPathToCache(path.join(fixtures, 'sample.js'), editorHome);
       return expect(CompileCache.getCacheStats()['.js']).toEqual({hits: 0, misses: 0});
   }));
 
@@ -47,31 +47,31 @@ describe('CompileCache', () => {
     * TypeError: The "data" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received undefined
     */
     xdescribe('when the given file uses babel', () => it('compiles the file with babel and caches it', function() {
-      CompileCache.addPathToCache(path.join(fixtures, 'babel', 'babel-comment.js'), atomHome);
+      CompileCache.addPathToCache(path.join(fixtures, 'babel', 'babel-comment.js'), editorHome);
       expect(CompileCache.getCacheStats()['.js']).toEqual({hits: 0, misses: 1});
       expect(babelCompiler.compile.callCount).toBe(1);
 
-      CompileCache.addPathToCache(path.join(fixtures, 'babel', 'babel-comment.js'), atomHome);
+      CompileCache.addPathToCache(path.join(fixtures, 'babel', 'babel-comment.js'), editorHome);
       expect(CompileCache.getCacheStats()['.js']).toEqual({hits: 1, misses: 1});
       return expect(babelCompiler.compile.callCount).toBe(1);
     }));
 
     describe('when the given file is coffee-script', () => it('compiles the file with coffee-script and caches it', function() {
-      CompileCache.addPathToCache(path.join(fixtures, 'coffee.coffee'), atomHome);
+      CompileCache.addPathToCache(path.join(fixtures, 'coffee.coffee'), editorHome);
       expect(CompileCache.getCacheStats()['.coffee']).toEqual({hits: 0, misses: 1});
       expect(CoffeeScript.compile.callCount).toBe(1);
 
-      CompileCache.addPathToCache(path.join(fixtures, 'coffee.coffee'), atomHome);
+      CompileCache.addPathToCache(path.join(fixtures, 'coffee.coffee'), editorHome);
       expect(CompileCache.getCacheStats()['.coffee']).toEqual({hits: 1, misses: 1});
       return expect(CoffeeScript.compile.callCount).toBe(1);
     }));
 
     describe('when the given file is typescript', () => it('compiles the file with typescript and caches it', function() {
-      CompileCache.addPathToCache(path.join(fixtures, 'typescript', 'valid.ts'), atomHome);
+      CompileCache.addPathToCache(path.join(fixtures, 'typescript', 'valid.ts'), editorHome);
       expect(CompileCache.getCacheStats()['.ts']).toEqual({hits: 0, misses: 1});
       expect(TypeScriptSimple.prototype.compile.callCount).toBe(1);
 
-      CompileCache.addPathToCache(path.join(fixtures, 'typescript', 'valid.ts'), atomHome);
+      CompileCache.addPathToCache(path.join(fixtures, 'typescript', 'valid.ts'), editorHome);
       expect(CompileCache.getCacheStats()['.ts']).toEqual({hits: 1, misses: 1});
       return expect(TypeScriptSimple.prototype.compile.callCount).toBe(1);
     }));
@@ -80,13 +80,13 @@ describe('CompileCache', () => {
       spyOn(CSON, 'setCacheDir').andCallThrough();
       spyOn(CSON, 'readFileSync').andCallThrough();
 
-      CompileCache.addPathToCache(path.join(fixtures, 'cson.cson'), atomHome);
+      CompileCache.addPathToCache(path.join(fixtures, 'cson.cson'), editorHome);
       expect(CSON.readFileSync).toHaveBeenCalledWith(path.join(fixtures, 'cson.cson'));
-      expect(CSON.setCacheDir).toHaveBeenCalledWith(path.join(atomHome, '/compile-cache'));
+      expect(CSON.setCacheDir).toHaveBeenCalledWith(path.join(editorHome, '/compile-cache'));
 
       CSON.readFileSync.reset();
       CSON.setCacheDir.reset();
-      CompileCache.addPathToCache(path.join(fixtures, 'cson.cson'), atomHome);
+      CompileCache.addPathToCache(path.join(fixtures, 'cson.cson'), editorHome);
       expect(CSON.readFileSync).toHaveBeenCalledWith(path.join(fixtures, 'cson.cson'));
       return expect(CSON.setCacheDir).not.toHaveBeenCalled();
     }));

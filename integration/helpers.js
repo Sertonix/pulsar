@@ -4,7 +4,7 @@ const p = require('playwright')
 const electron = p._electron
 const { expect } = require('@playwright/test')
 
-async function openAtom(profilePath, videoName) {
+async function openEditor(profilePath, videoName) {
   const env = process.env
   env.ATOM_HOME = path.join("tmp", profilePath)
   env.APM_PATH = path.join("apm", "node_modules", "pulsar-package-manager", "bin", "apm")
@@ -47,7 +47,7 @@ async function typeInEditor({page}, locator, text) {
 }
 
 module.exports = {
-  openAtom,
+  openAtom: openEditor,
   runCommand,
   typeInEditor
 }

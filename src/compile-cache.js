@@ -43,8 +43,8 @@ exports.removeTranspilerConfigForPath = function(packagePath) {
 const cacheStats = {};
 let cacheDirectory = null;
 
-exports.setAtomHomeDirectory = function(atomHome) {
-  let cacheDir = path.join(atomHome, 'compile-cache');
+exports.setAtomHomeDirectory = function(editorHome) {
+  let cacheDir = path.join(editorHome, 'compile-cache');
   if (
     process.env.USER === 'root' &&
     process.env.SUDO_USER &&
@@ -63,8 +63,8 @@ exports.getCacheDirectory = function() {
   return cacheDirectory;
 };
 
-exports.addPathToCache = function(filePath, atomHome) {
-  this.setAtomHomeDirectory(atomHome);
+exports.addPathToCache = function(filePath, editorHome) {
+  this.setAtomHomeDirectory(editorHome);
   const extension = path.extname(filePath);
 
   if (extension === '.cson') {

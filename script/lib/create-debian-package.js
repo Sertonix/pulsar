@@ -42,7 +42,7 @@ module.exports = function(packagedAppPath) {
     debianPackageInstallDirPath,
     'share'
   );
-  const debianPackageAtomDirPath = path.join(
+  const debianPackageEditorDirPath = path.join(
     debianPackageShareDirPath,
     editorExecutableName
   );
@@ -91,9 +91,9 @@ module.exports = function(packagedAppPath) {
   fs.mkdirpSync(debianPackageDocsDirPath);
   fs.mkdirpSync(debianPackageBinDirPath);
 
-  console.log(`Copying "${packagedAppPath}" to "${debianPackageAtomDirPath}"`);
-  fs.copySync(packagedAppPath, debianPackageAtomDirPath);
-  fs.chmodSync(debianPackageAtomDirPath, '755');
+  console.log(`Copying "${packagedAppPath}" to "${debianPackageEditorDirPath}"`);
+  fs.copySync(packagedAppPath, debianPackageEditorDirPath);
+  fs.chmodSync(debianPackageEditorDirPath, '755');
 
   console.log(`Copying binaries into "${debianPackageBinDirPath}"`);
   fs.copySync(
@@ -115,7 +115,7 @@ module.exports = function(packagedAppPath) {
     path.join(debianPackageBinDirPath, pkgMgrExecutableName)
   );
 
-  fs.chmodSync(path.join(debianPackageAtomDirPath, 'chrome-sandbox'), '4755');
+  fs.chmodSync(path.join(debianPackageEditorDirPath, 'chrome-sandbox'), '4755');
 
   console.log(`Writing control file into "${debianPackageConfigPath}"`);
   const packageSizeInKilobytes = spawnSync('du', ['-sk', packagedAppPath])

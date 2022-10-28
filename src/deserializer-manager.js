@@ -20,8 +20,8 @@ const { Disposable } = require('event-kit');
 //     @state
 // ```
 module.exports = class DeserializerManager {
-  constructor(atomEnvironment) {
-    this.atomEnvironment = atomEnvironment;
+  constructor(editorEnvironment) {
+    this.atomEnvironment = editorEnvironment;
     this.deserializers = {};
   }
 

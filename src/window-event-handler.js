@@ -4,7 +4,7 @@ const { debounce } = require('underscore-plus');
 
 // Handles low-level events related to the `window`.
 module.exports = class WindowEventHandler {
-  constructor({ atomEnvironment, applicationDelegate }) {
+  constructor({ atomEnvironment: editorEnvironment, applicationDelegate }) {
     this.handleDocumentKeyEvent = this.handleDocumentKeyEvent.bind(this);
     this.handleFocusNext = this.handleFocusNext.bind(this);
     this.handleFocusPrevious = this.handleFocusPrevious.bind(this);
@@ -24,7 +24,7 @@ module.exports = class WindowEventHandler {
     this.handleWindowToggleMenuBar = this.handleWindowToggleMenuBar.bind(this);
     this.handleLinkClick = this.handleLinkClick.bind(this);
     this.handleDocumentContextmenu = this.handleDocumentContextmenu.bind(this);
-    this.atomEnvironment = atomEnvironment;
+    this.atomEnvironment = editorEnvironment;
     this.applicationDelegate = applicationDelegate;
     this.reloadRequested = false;
     this.subscriptions = new CompositeDisposable();

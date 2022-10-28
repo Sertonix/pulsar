@@ -273,9 +273,9 @@ function registerBuiltins(devMode) {
     !cache.resourcePath.startsWith(`${process.resourcesPath}${path.sep}`)
   ) {
     const fs = require('fs-plus');
-    const atomJsPath = path.join(cache.resourcePath, 'exports', 'atom.js');
-    if (fs.isFileSync(atomJsPath)) {
-      cache.builtins.atom = atomJsPath;
+    const editorJsPath = path.join(cache.resourcePath, 'exports', 'atom.js');
+    if (fs.isFileSync(editorJsPath)) {
+      cache.builtins.atom = editorJsPath;
     }
   }
   if (cache.builtins.atom == null) {

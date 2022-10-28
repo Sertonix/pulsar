@@ -4,13 +4,13 @@ const temp = require('temp').track();
 const CommandInstaller = require('../src/command-installer');
 
 describe('CommandInstaller on #darwin', () => {
-  let installer, resourcesPath, installationPath, atomBinPath, apmBinPath;
+  let installer, resourcesPath, installationPath, editorBinPath, apmBinPath;
 
   beforeEach(() => {
     installationPath = temp.mkdirSync('atom-bin');
 
     resourcesPath = temp.mkdirSync('atom-app');
-    atomBinPath = path.join(resourcesPath, 'app', 'atom.sh');
+    editorBinPath = path.join(resourcesPath, 'app', 'atom.sh');
     apmBinPath = path.join(
       resourcesPath,
       'app',
@@ -19,9 +19,9 @@ describe('CommandInstaller on #darwin', () => {
       '.bin',
       'apm'
     );
-    fs.writeFileSync(atomBinPath, '');
+    fs.writeFileSync(editorBinPath, '');
     fs.writeFileSync(apmBinPath, '');
-    fs.chmodSync(atomBinPath, '755');
+    fs.chmodSync(editorBinPath, '755');
     fs.chmodSync(apmBinPath, '755');
 
     spyOn(CommandInstaller.prototype, 'getResourcesDirectory').andReturn(
@@ -97,16 +97,16 @@ describe('CommandInstaller on #darwin', () => {
     * timeout: timed out after 120000 msec waiting for condition
     */
     xit("symlinks the atom command as 'atom'", () => {
-      const installedAtomPath = path.join(installationPath, 'atom');
-      expect(fs.isFileSync(installedAtomPath)).toBeFalsy();
+      const installedEditorPath = path.join(installationPath, 'atom');
+      expect(fs.isFileSync(installedEditorPath)).toBeFalsy();
 
       waitsFor(done => {
         installer.installAtomCommand(false, error => {
           expect(error).toBeNull();
-          expect(fs.realpathSync(installedAtomPath)).toBe(
-            fs.realpathSync(atomBinPath)
+          expect(fs.realpathSync(installedEditorPath)).toBe(
+            fs.realpathSync(editorBinPath)
           );
-          expect(fs.isExecutableSync(installedAtomPath)).toBe(true);
+          expect(fs.isExecutableSync(installedEditorPath)).toBe(true);
           expect(fs.isFileSync(path.join(installationPath, 'atom-beta'))).toBe(
             false
           );
@@ -146,16 +146,16 @@ describe('CommandInstaller on #darwin', () => {
     * timeout: timed out after 120000 msec waiting for condition
     */
     xit("symlinks the atom command as 'atom-beta'", () => {
-      const installedAtomPath = path.join(installationPath, 'atom-beta');
-      expect(fs.isFileSync(installedAtomPath)).toBeFalsy();
+      const installedEditorPath = path.join(installationPath, 'atom-beta');
+      expect(fs.isFileSync(installedEditorPath)).toBeFalsy();
 
       waitsFor(done => {
         installer.installAtomCommand(false, error => {
           expect(error).toBeNull();
-          expect(fs.realpathSync(installedAtomPath)).toBe(
-            fs.realpathSync(atomBinPath)
+          expect(fs.realpathSync(installedEditorPath)).toBe(
+            fs.realpathSync(editorBinPath)
           );
-          expect(fs.isExecutableSync(installedAtomPath)).toBe(true);
+          expect(fs.isExecutableSync(installedEditorPath)).toBe(true);
           expect(fs.isFileSync(path.join(installationPath, 'atom'))).toBe(
             false
           );
@@ -193,16 +193,16 @@ describe('CommandInstaller on #darwin', () => {
     * timeout: timed out after 120000 msec waiting for condition
     */
     xit("symlinks the atom command as 'atom-nightly'", () => {
-      const installedAtomPath = path.join(installationPath, 'atom-nightly');
-      expect(fs.isFileSync(installedAtomPath)).toBeFalsy();
+      const installedEditorPath = path.join(installationPath, 'atom-nightly');
+      expect(fs.isFileSync(installedEditorPath)).toBeFalsy();
 
       waitsFor(done => {
         installer.installAtomCommand(false, error => {
           expect(error).toBeNull();
-          expect(fs.realpathSync(installedAtomPath)).toBe(
-            fs.realpathSync(atomBinPath)
+          expect(fs.realpathSync(installedEditorPath)).toBe(
+            fs.realpathSync(editorBinPath)
           );
-          expect(fs.isExecutableSync(installedAtomPath)).toBe(true);
+          expect(fs.isExecutableSync(installedEditorPath)).toBe(true);
           expect(fs.isFileSync(path.join(installationPath, 'atom'))).toBe(
             false
           );

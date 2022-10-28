@@ -23,11 +23,11 @@ const AnyConstructor = Symbol('any-constructor');
 //
 // You can access the `ViewRegistry` object via `atom.views`.
 module.exports = class ViewRegistry {
-  constructor(atomEnvironment) {
+  constructor(editorEnvironment) {
     this.animationFrameRequest = null;
     this.documentReadInProgress = false;
     this.performDocumentUpdate = this.performDocumentUpdate.bind(this);
-    this.atomEnvironment = atomEnvironment;
+    this.atomEnvironment = editorEnvironment;
     this.clear();
   }
 

@@ -302,39 +302,39 @@ function transformDeprecatedShadowDOMSelectors(css, context) {
             firstNode.type === 'pseudo' &&
             firstNode.value === ':host'
           ) {
-            const atomTextEditorElementNode = selectorParser.tag({
+            const editorTextEditorElementNode = selectorParser.tag({
               value: 'atom-text-editor'
             });
-            firstNode.replaceWith(atomTextEditorElementNode);
+            firstNode.replaceWith(editorTextEditorElementNode);
           }
 
-          let previousNodeIsAtomTextEditor = false;
-          let targetsAtomTextEditorShadow = context === 'atom-text-editor';
+          let previousNodeIsTextEditor = false;
+          let targetsTextEditorShadow = context === 'atom-text-editor';
           let previousNode;
           selector.each(node => {
-            if (targetsAtomTextEditorShadow && node.type === 'class') {
+            if (targetsTextEditorShadow && node.type === 'class') {
               if (DEPRECATED_SYNTAX_SELECTORS.has(node.value)) {
                 node.value = `syntax--${node.value}`;
               }
             } else {
               if (
-                previousNodeIsAtomTextEditor &&
+                previousNodeIsTextEditor &&
                 node.type === 'pseudo' &&
                 node.value === '::shadow'
               ) {
                 node.type = 'className';
                 node.value = '.editor';
-                targetsAtomTextEditorShadow = true;
+                targetsTextEditorShadow = true;
               }
             }
             previousNode = node;
             if (node.type === 'combinator') {
-              previousNodeIsAtomTextEditor = false;
+              previousNodeIsTextEditor = false;
             } else if (
               previousNode.type === 'tag' &&
               previousNode.value === 'atom-text-editor'
             ) {
-              previousNodeIsAtomTextEditor = true;
+              previousNodeIsTextEditor = true;
             }
           });
         });

@@ -17,13 +17,13 @@ let includeShellLoadTime = true;
 let nextId = 0;
 
 module.exports = class AtomWindow extends EventEmitter {
-  constructor(atomApplication, fileRecoveryService, settings = {}) {
+  constructor(editorApplication, fileRecoveryService, settings = {}) {
     StartupTime.addMarker('main-process:atom-window:start');
 
     super();
 
     this.id = nextId++;
-    this.atomApplication = atomApplication;
+    this.atomApplication = editorApplication;
     this.fileRecoveryService = fileRecoveryService;
     this.isSpec = settings.isSpec;
     this.headless = settings.headless;

@@ -1,5 +1,5 @@
 const os = require('os')
-const {openAtom, runCommand, typeInEditor} = require('./helpers')
+const {openAtom: openEditor, runCommand, typeInEditor} = require('./helpers')
 const { test, expect } = require('@playwright/test')
 
 const languages = [
@@ -42,7 +42,7 @@ const languages = [
 let editor
 test.describe('Opening Atom for the first time', () => {
   test.beforeAll(async () => {
-    editor = await openAtom("atom-home-tests", "opening-first-time")
+    editor = await openEditor("atom-home-tests", "opening-first-time")
   })
 
   test.afterAll(async () => {

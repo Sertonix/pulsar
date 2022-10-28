@@ -5,10 +5,10 @@
 const cleanCaches = require('./lib/clean-caches');
 const cleanDependencies = require('./lib/clean-dependencies');
 const cleanOutputDirectory = require('./lib/clean-output-directory');
-const killRunningAtomInstances = require('./lib/kill-running-atom-instances');
+const killRunningEditorInstances = require('./lib/kill-running-atom-instances');
 
 async function clean() {
-  killRunningAtomInstances();
+  killRunningEditorInstances();
   return Promise.all([
     cleanDependencies(),
     cleanCaches(),

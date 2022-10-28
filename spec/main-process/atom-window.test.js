@@ -25,7 +25,7 @@ describe('AtomWindow', function() {
   });
 
   describe('creating a real window', function() {
-    let resourcePath, windowInitializationScript, atomHome;
+    let resourcePath, windowInitializationScript, editorHome;
     let original;
 
     this.timeout(10 * 1000);
@@ -43,7 +43,7 @@ describe('AtomWindow', function() {
         path.join(resourcePath, 'src/initialize-application-window')
       );
 
-      atomHome = await new Promise((resolve, reject) => {
+      editorHome = await new Promise((resolve, reject) => {
         temp.mkdir('launch-', (err, rootPath) => {
           if (err) {
             reject(err);
@@ -63,7 +63,7 @@ describe('AtomWindow', function() {
         `;
 
         fs.writeFile(
-          path.join(atomHome, 'config.cson'),
+          path.join(editorHome, 'config.cson'),
           config,
           { encoding: 'utf8' },
           err => {
@@ -76,7 +76,7 @@ describe('AtomWindow', function() {
         );
       });
 
-      process.env.ATOM_HOME = atomHome;
+      process.env.ATOM_HOME = editorHome;
       process.env.ATOM_DISABLE_SHELLING_OUT_FOR_ENVIRONMENT = 'true';
     });
 
@@ -102,7 +102,7 @@ describe('AtomWindow', function() {
       assert.strictEqual(settings.userSettings, 'stub-config');
       assert.strictEqual(settings.extra, 'extra-load-setting');
       assert.strictEqual(settings.resourcePath, resourcePath);
-      assert.strictEqual(settings.atomHome, atomHome);
+      assert.strictEqual(settings.atomHome, editorHome);
       assert.isFalse(settings.devMode);
       assert.isFalse(settings.safeMode);
       assert.isFalse(settings.clearWindowState);

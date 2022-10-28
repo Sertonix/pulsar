@@ -44,9 +44,9 @@ describe('link package', () => {
 
     // only works in Atom >= 1.33.0
     // https://github.com/atom/link/pull/33#issuecomment-419643655
-    const atomVersion = atom.getVersion().split('.');
-    console.error('atomVersion', atomVersion);
-    if (+atomVersion[0] > 1 || +atomVersion[1] >= 33) {
+    const editorVersion = atom.getVersion().split('.');
+    console.error('editorVersion', editorVersion);
+    if (+editorVersion[0] > 1 || +editorVersion[1] >= 33) {
       it("opens an 'atom:' link", async () => {
         await atom.workspace.open('sample.md');
 
