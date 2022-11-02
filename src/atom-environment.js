@@ -225,7 +225,8 @@ class AtomEnvironment {
       id: packagejson.branding.id,
       name: packagejson.branding.name,
       urlWeb: packagejson.branding.urlWeb,
-      urlGH: packagejson.branding.urlGH
+      urlGH: packagejson.branding.urlGH,
+      uriScheme: packagejson.branding.uriScheme
     };
 
     // Keep instances of HistoryManager in sync
@@ -387,15 +388,15 @@ class AtomEnvironment {
   registerDefaultOpeners() {
     this.workspace.addOpener(uri => {
       switch (uri) {
-        case 'atom://.pulsar/stylesheet':
+        case `${this.branding.uriScheme}://.pulsar/stylesheet`:
           return this.workspace.openTextFile(
             this.styles.getUserStyleSheetPath()
           );
-        case 'atom://.pulsar/keymap':
+        case `${this.branding.uriScheme}://.pulsar/keymap`:
           return this.workspace.openTextFile(this.keymaps.getUserKeymapPath());
-        case 'atom://.pulsar/config':
+        case `${this.branding.uriScheme}://.pulsar/config`:
           return this.workspace.openTextFile(this.config.getUserConfigPath());
-        case 'atom://.pulsar/init-script':
+        case `${this.branding.uriScheme}://.pulsar/init-script`:
           return this.workspace.openTextFile(this.getUserInitScriptPath());
       }
     });

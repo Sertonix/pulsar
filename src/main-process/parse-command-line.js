@@ -28,7 +28,7 @@ module.exports = function parseCommandLine(processArgs) {
     A file may be opened at the desired line (and optionally column) by
     appending the numbers right after the file name, e.g. \`pulsar file:5:8\`.
 
-    Paths that start with \`atom://\` will be interpreted as URLs.
+    Paths that start with \`<scheme>://\` will be interpreted as URLs.
 
     Environment Variables:
 

@@ -28,6 +28,7 @@ const url = require('url');
 const { promisify } = require('util');
 const { EventEmitter } = require('events');
 const _ = require('underscore-plus');
+const CSON = require('season');
 let FindParentDir = null;
 let Resolve = null;
 const ConfigSchema = require('../config-schema');
@@ -209,6 +210,10 @@ module.exports = class AtomApplication extends EventEmitter {
     this._killProcess = options.killProcess || process.kill.bind(process);
     this.waitSessionsByWindow = new Map();
     this.windowStack = new WindowStack();
+    
+    const packageJsonPath = path.join(this.resourcePath, 'package.json');
+    const packageJson = CSON.readFileSync(packageJsonPath);
+    this.branding = packageJson.branding;
 
     this.initializeAtomHome(process.env.ATOM_HOME);
 
@@ -262,7 +267,8 @@ module.exports = class AtomApplication extends EventEmitter {
     );
     this.atomProtocolHandler = new AtomProtocolHandler(
       this.resourcePath,
-      this.safeMode
+      this.safeMode,
+      this.branding.uriScheme
     );
 
     let socketServerPromise;
@@ -676,21 +682,21 @@ module.exports = class AtomApplication extends EventEmitter {
       });
     }
 
-    this.openPathOnEvent('application:about', 'atom://about');
-    this.openPathOnEvent('application:show-settings', 'atom://config');
-    this.openPathOnEvent('application:open-your-config', 'atom://.pulsar/config');
+    this.openPathOnEvent('application:about', `${this.branding.uriScheme}//about`);
+    this.openPathOnEvent('application:show-settings', `${this.branding.uriScheme}://config`);
+    this.openPathOnEvent('application:open-your-config', `${this.branding.uriScheme}://.pulsar/config`);
     this.openPathOnEvent(
       'application:open-your-init-script',
-      'atom://.pulsar/init-script'
+      `${this.branding.uriScheme}://.pulsar/init-script`
     );
-    this.openPathOnEvent('application:open-your-keymap', 'atom://.pulsar/keymap');
+    this.openPathOnEvent('application:open-your-keymap', `${this.branding.uriScheme}://.pulsar/keymap`);
     this.openPathOnEvent(
       'application:open-your-snippets',
-      'atom://.pulsar/snippets'
+      `${this.branding.uriScheme}://.pulsar/snippets`
     );
     this.openPathOnEvent(
       'application:open-your-stylesheet',
-      'atom://.pulsar/stylesheet'
+      `${this.branding.uriScheme}://.pulsar/stylesheet`
     );
     this.openPathOnEvent(
       'application:open-license',
@@ -1549,19 +1555,19 @@ module.exports = class AtomApplication extends EventEmitter {
     }
   }
 
-  // Open an atom:// url.
+  // Open an <scheme>:// url.
   //
   // The host of the URL being opened is assumed to be the package name
   // responsible for opening the URL.  A new window will be created with
   // that package's `urlMain` as the bootstrap script.
   //
   // options -
-  //   :urlToOpen - The atom:// url to open.
+  //   :urlToOpen - The <scheme>:// url to open.
   //   :devMode - Boolean to control the opened window's dev mode.
   //   :safeMode - Boolean to control the opened window's safe mode.
   openUrl({ urlToOpen, devMode, safeMode, env }) {
     const parsedUrl = url.parse(urlToOpen, true);
-    if (parsedUrl.protocol !== 'atom:') return;
+    if (parsedUrl.protocol !== `${atom.branding.uriScheme}:`) return;
 
     const pack = this.findPackageWithName(parsedUrl.host, devMode);
     if (pack && pack.urlMain) {

@@ -5,7 +5,7 @@ const path = require('path');
 // Handles requests with 'atom' protocol.
 //
 // It's created by {AtomApplication} upon instantiation and is used to create a
-// custom resource loader for 'atom://' URLs.
+// custom resource loader for '<scheme>://' URLs.
 //
 // The following directories are searched in order:
 //   * ~/.pulsar/assets
@@ -14,8 +14,9 @@ const path = require('path');
 //   * RESOURCE_PATH/node_modules
 //
 module.exports = class AtomProtocolHandler {
-  constructor(resourcePath, safeMode) {
+  constructor(resourcePath, safeMode, uriScheme) {
     this.loadPaths = [];
+    this.uriScheme = uriScheme;
 
     if (!safeMode) {
       this.loadPaths.push(path.join(process.env.ATOM_HOME, 'dev', 'packages'));
@@ -30,7 +31,7 @@ module.exports = class AtomProtocolHandler {
 
   // Creates the 'atom' custom protocol handler.
   registerAtomProtocol() {
-    protocol.registerFileProtocol('atom', (request, callback) => {
+    protocol.registerFileProtocol(this.uriScheme, (request, callback) => {
       const relativePath = path.normalize(request.url.substr(7));
 
       let filePath;

@@ -82,13 +82,13 @@ module.exports = class ProtocolHandlerInstaller {
     };
 
     notification = notifications.addInfo(
-      'Register as default atom:// URI handler?',
+      `Register as default ${dsa.branding.uriScheme}:// URI handler?`,
       {
         dismissable: true,
         icon: 'link',
         description:
-          'Pulsar is not currently set as the default handler for atom:// URIs. Would you like Pulsar to handle ' +
-          'atom:// URIs?',
+          `Pulsar is not currently set as the default handler for ${dsa.branding.uriScheme}:// URIs. Would you like Pulsar to handle ` +
+          `${dsa.branding.uriScheme}:// URIs?`,
         buttons: [
           {
             text: 'Yes',
