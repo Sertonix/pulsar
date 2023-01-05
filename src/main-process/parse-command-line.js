@@ -127,10 +127,10 @@ module.exports = function parseCommandLine(processArgs) {
     );
   options
     .alias('p', 'package')
-    .boolean('p')
+    .string('p')
     .describe(
       'package',
-      'Delegate all commands to Pulsar\'s package management. Run with --package for more details'
+      'Call the cli from a package'
     );
   options.boolean('uri-handler');
   options
@@ -146,16 +146,30 @@ module.exports = function parseCommandLine(processArgs) {
   let args = options.argv;
 
   if (args['package']) {
-    const PackageManager = require('../package-manager');
-    const cp = require('child_process');
-    const ppmPath = PackageManager.possibleApmPaths();
-
-    let ppmArgs = [...processArgs]
-    while(true) {
-      const arg = ppmArgs.shift()
-      if(arg === '-p' || arg === '--package' || ppmArgs.length === 0) break;
+    const packageJSON = require('../../package.json');
+    if (!packageJSON.packageDependencies[args['package']]) {
+      console.error(`package ${JSON.stringify(args['package'])} not found`);
+      process.exit(1);
+      return;
     }
-    const exitCode = cp.spawnSync(ppmPath, ppmArgs, {stdio: 'inherit'}).status;
+
+    const path = require('path');
+    const packagePackageJSON = require(`${args['package']}/package.json`);
+    console.log(packagePackageJSON);
+    if (!packagePackageJSON.cli) {
+      console.error(`package ${JSON.stringify(args['package'])} has no cli`);
+      process.exit(1);
+      return;
+    }
+    const cliPath = path.join(args['package'],packagePackageJSON.cli);
+    const cliRun = require(cliPath).run;
+    let exitCode;
+    try {
+      exitCode = cliRun(args) ?? 0;
+    } catch (e) {
+      console.error(e);
+      exitCode = 1;
+    }
     process.exit(exitCode);
     return;
   }
